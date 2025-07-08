@@ -1,5 +1,7 @@
 package com.nixon.TO_DO.service.impl;
 
+import com.nixon.TO_DO.dto.response.TaskListResponse;
+import com.nixon.TO_DO.dto.response.UserResponse;
 import com.nixon.TO_DO.entity.User;
 import com.nixon.TO_DO.exception.BadRequestException;
 import com.nixon.TO_DO.exception.EntityNotFoundException;
@@ -10,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,13 +37,39 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return this.userRepository.findAll();
+    public List<UserResponse> getAllUsers() {
+
+
+        return this.userRepository.findAll().stream().map(
+                user -> new UserResponse(user.getId(),user.getUsername(),user.getPassword(),user.getTaskList().stream()
+                        .map(
+                        taskList -> new TaskListResponse
+                                (null, taskList.getId(), taskList.getTitle(),
+                                taskList.getDescription(), taskList.getCreationDate(),
+                                taskList.getLastUpdate())
+                        ).toList()))
+                .toList();
     }
 
     @Override
-    public Optional<User> getUserById(Long id) {
-        return this.userRepository.findById(id);
+    public UserResponse getUserById(Long id) {
+        return this.userRepository.findById(id).map(
+                (user) -> new UserResponse(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getPassword(),
+                        user.getTaskList().stream().map(
+                                (list) -> new TaskListResponse(
+                                        list.getUser().getUsername(),
+                                        list.getId(),
+                                        list.getTitle(),
+                                        list.getDescription(),
+                                        list.getCreationDate(),
+                                        list.getLastUpdate())
+                        ).collect(Collectors.toList()))
+        ).orElseThrow(
+                () -> new EntityNotFoundException("User Not Found")
+        );
     }
 
 //    @Override

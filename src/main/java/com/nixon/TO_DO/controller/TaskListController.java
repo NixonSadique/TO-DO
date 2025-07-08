@@ -33,24 +33,24 @@ public class TaskListController {
     @GetMapping("/")
     public ResponseEntity<List<TaskListResponse>> getAllTaskLists(){
         return ResponseEntity.ok(listService.getAllTaskLists().stream().map(
-                (list) -> new  TaskListResponse(list.getUser().getUsername()
-                        ,list.getId()
-                        ,list.getTitle()
-                        ,list.getDescription()
-                        ,list.getCreationDate()
-                        ,list.getLastUpdate())
+                (list) -> new  TaskListResponse(list.getUser().getUsername(),
+                        list.getId(),
+                        list.getTitle(),
+                        list.getDescription(),
+                        list.getCreationDate(),
+                        list.getLastUpdate())
         ).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<List<TaskListResponse>> getTaskListsByUser(@PathVariable Long id){
         return ResponseEntity.ok(listService.getTaskListsByUser(id).stream().map(
-                (list) -> new  TaskListResponse(list.getUser().getUsername()
-                        ,list.getId()
-                        ,list.getTitle()
-                        ,list.getDescription()
-                        ,list.getCreationDate()
-                        ,list.getLastUpdate())
+                (list) -> new  TaskListResponse(list.getUser().getUsername(),
+                        list.getId(),
+                        list.getTitle(),
+                        list.getDescription(),
+                        list.getCreationDate(),
+                        list.getLastUpdate())
         ).collect(Collectors.toList()));
     }
 

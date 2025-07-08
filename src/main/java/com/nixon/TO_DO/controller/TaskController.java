@@ -35,7 +35,12 @@ public class TaskController {
     ResponseEntity<List<TaskResponse>> getTasksInList(@PathVariable Long id){
         return ResponseEntity.ok(
                 taskService.getTasksInTaskList(id).stream().map(
-                        (task) -> new TaskResponse(task.getId(),task.getMessage(),task.isCompleted(),task.getPriority(), task.getTaskList().getTitle())
+                        (task) -> new TaskResponse(
+                                task.getId(),
+                                task.getMessage(),
+                                task.isCompleted(),
+                                task.getPriority(),
+                                task.getTaskList().getTitle())
                 ).collect(Collectors.toList())
         );
     }
