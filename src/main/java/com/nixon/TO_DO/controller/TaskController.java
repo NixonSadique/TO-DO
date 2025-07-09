@@ -23,11 +23,15 @@ public class TaskController {
     ResponseEntity<String> createTask(@RequestBody TaskRequest request){
         Task task = new Task();
         task.setMessage(request.message());
-        if (request.priority() != null) {
-            task.setPriority(Priority.valueOf(request.priority().toUpperCase()));
-        }else{
-            task.setPriority(Priority.NONE);
-        }
+
+        String priority = request.priority();
+
+        task.setPriority(
+                priority!=null?
+                        Priority.valueOf(priority.toUpperCase().strip()):
+                        Priority.NONE
+        );
+
         return ResponseEntity.ok(taskService.createTask(task, request.listId()));
     }
 
