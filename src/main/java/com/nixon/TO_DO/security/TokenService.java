@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.nixon.TO_DO.entity.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -12,7 +13,8 @@ import java.util.Date;
 @Service
 public class TokenService {
 
-    private final String secret = "71eb1e80167d05e386f02c7be1798db5";
+    @Value("${jwt.secret}")
+    private String secret;
 
 
     public String generateToken(User user) throws JWTCreationException {

@@ -2,6 +2,7 @@ package com.nixon.TO_DO.service.impl;
 
 import com.nixon.TO_DO.dto.request.AuthenticationRequest;
 import com.nixon.TO_DO.dto.response.TokenResponse;
+import com.nixon.TO_DO.entity.User;
 import com.nixon.TO_DO.exception.BadRequestException;
 import com.nixon.TO_DO.exception.EntityNotFoundException;
 import com.nixon.TO_DO.repository.UserRepository;
@@ -21,13 +22,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public TokenResponse authenticate(AuthenticationRequest request) {
-        var token = tokenService.generateToken(
-                repository.
-                        findByUsername(request.username())
-                        .orElseThrow(
-                                () -> new EntityNotFoundException("User not found!")
-                        )
-        );
+        User user = repository.
+                findByUsername(request.username())
+                .orElseThrow(
+                        () -> new EntityNotFoundException("User not found!")
+                );
+
+        var token = tokenService.generateToken(user);
+
         authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.username(),
@@ -36,6 +38,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         );
 
 
-        return new TokenResponse(token);
+        return new TokenResponse(token, user.getId());
     }
 }
